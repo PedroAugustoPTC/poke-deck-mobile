@@ -1,0 +1,7 @@
+.git
+.gradle
+**/build
+dist
+design
+local.properties
+*.jks

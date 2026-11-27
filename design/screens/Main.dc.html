@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>PokeDeck Mobile — menu de contas</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&amp;family=Barlow+Semi+Condensed:wght@500;600&amp;family=Pixelify+Sans:wght@500;600;700&amp;display=swap">
+<style>body{margin:0}a{color:#ffe9a3}a:hover{color:#fff6ef}</style>
+</helmet>
+<div style="width: 390px; min-height: 1040px; box-sizing: border-box; display: flex; flex-direction: column; background: #140a0f; color: #fff6ef; font-family: 'Barlow', 'Segoe UI', sans-serif; font-size: 14px">
+
+  <header style="display: flex; align-items: center; gap: 8px; padding: 10px 10px 10px 14px; background: #914850; border-top: 1px solid #bd6951; border-bottom: 2px solid #480e1e; font-family: 'Barlow Semi Condensed', 'Barlow', sans-serif">
+    <img src="/_blob/4d65206dd4da7c6745a71e16e8e43d54" alt="" width="28" height="28" style="image-rendering: pixelated; display: block">
+    <span style="font-family: 'Pixelify Sans', monospace; font-weight: 600; font-size: 22px; color: #ffe9a3">PokeDeck</span>
+    <span style="flex: 1 1 0"></span>
+    <a href="Tour.dc.html" aria-label="Tour" style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; box-sizing: border-box; border: 1px solid #480e1e; border-radius: 4px; background: #722c3f; color: #fff6ef; box-shadow: inset 0 1px 0 rgba(241,211,183,0.22)"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"></circle><path d="M6.2 6.2a1.9 1.9 0 1 1 2.6 1.8c-.5.2-.8.6-.8 1.1v.4M8 11.6v.1"></path></svg></a>
+    <a href="Config.dc.html" aria-label="Config" style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; box-sizing: border-box; border: 1px solid #480e1e; border-radius: 4px; background: #722c3f; color: #fff6ef; box-shadow: inset 0 1px 0 rgba(241,211,183,0.22)"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="2.2"></circle><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4"></path></svg></a>
+  </header>
+
+  <main style="flex: 1; display: flex; flex-direction: column; gap: 18px; padding: 14px 12px 24px">
+
+    <section aria-labelledby="h-contas" style="display: flex; flex-direction: column; gap: 8px">
+      <div style="display: flex; align-items: center; gap: 8px">
+        <h2 id="h-contas" style="margin: 0; font-family: 'Pixelify Sans', monospace; font-weight: 600; font-size: 18px; color: #e7a86d">Contas</h2>
+        <span style="color: #c9a9b4; font-size: 13px">entram sozinhas ao abrir</span>
+      </div>
+
+      <sc-for list="{{ contas }}" as="c" hint-placeholder-count="4">
+        <a href="Conta.dc.html" aria-label="Abrir {{ c.nome }}" style="display: flex; flex-direction: column; gap: 8px; padding: 10px 10px 10px 12px; border: 2px solid {{ c.moldura }}; border-radius: 4px; background: #1e1219; color: #fff6ef; text-decoration: none; box-shadow: inset 0 1px 0 rgba(241,211,183,0.08)">
+          <span style="display: flex; align-items: center; gap: 8px">
+            <span title="{{ c.estado }}" style="width: 9px; height: 9px; border-radius: 1px; background: {{ c.cor }}"></span>
+            <span style="font-weight: 700; font-size: 16px">{{ c.nome }}</span>
+            <span style="color: {{ c.cor }}; font-size: 13px">{{ c.estado }}</span>
+            <span style="flex: 1 1 0"></span>
+            <span style="display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 8px; border-radius: 3px; background: #33202b; color: #ffe9a3; font-weight: 600; font-variant-numeric: tabular-nums"><svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="#e2a93f" stroke="#7d5313" stroke-width="1.5"></circle><path d="M8 5v6" stroke="#7d5313" stroke-width="1.5"></path></svg>{{ c.ouro }}</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#c9a9b4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3 5 5-5 5"></path></svg>
+          </span>
+          <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px">
+            <span style="display: inline-flex; align-items: center; height: 24px; padding: 0 7px; border-radius: 3px; background: #33202b; color: #bf94ff; font-size: 13px">{{ c.buffT }}</span>
+            <span style="display: inline-flex; align-items: center; height: 24px; padding: 0 7px; border-radius: 3px; background: #33202b; color: #53fc18; font-size: 13px">{{ c.buffK }}</span>
+            <span style="flex: 1 1 0"></span>
+            <span title="Lives abertas: Twitch e Kick" style="color: #c9a9b4; font-size: 13px; font-variant-numeric: tabular-nums"><span style="color: #bf94ff">T {{ c.t }}</span> · <span style="color: #53fc18">K {{ c.k }}</span></span>
+            <span aria-label="Resgate Twitch {{ c.giftTTxt }}" style="display: inline-flex; align-items: center; gap: 2px; height: 22px; padding: 0 5px; border: 1px solid {{ c.giftTBorda }}; border-radius: 3px; background: {{ c.giftTFundo }}; color: {{ c.giftTCor }}; font-size: 12px; font-weight: 600"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="12" height="3"></rect><path d="M3 9v5h10V9M8 6v8"></path></svg>T</span>
+            <span aria-label="Resgate Kick {{ c.giftKTxt }}" style="display: inline-flex; align-items: center; gap: 2px; height: 22px; padding: 0 5px; border: 1px solid {{ c.giftKBorda }}; border-radius: 3px; background: {{ c.giftKFundo }}; color: {{ c.giftKCor }}; font-size: 12px; font-weight: 600"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="12" height="3"></rect><path d="M3 9v5h10V9M8 6v8"></path></svg>K</span>
+            <span aria-label="Recompra {{ c.compraTxt }}" style="display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 22px; border: 1px solid {{ c.compraBorda }}; border-radius: 3px; background: {{ c.compraFundo }}; color: {{ c.compraCor }}"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 2.5h2l1.5 8h7.5l1.5-6H4.2"></path><circle cx="6" cy="13.2" r="1"></circle><circle cx="11.5" cy="13.2" r="1"></circle></svg></span>
+          </span>
+        </a>
+      </sc-for>
+    </section>
+
+    <section aria-labelledby="h-lives" style="display: flex; flex-direction: column; gap: 10px; padding: 12px; background: #2a141d; border: 1px solid #480e1e; border-radius: 4px">
+      <div style="display: flex; align-items: center; gap: 8px">
+        <h2 id="h-lives" style="margin: 0; font-family: 'Pixelify Sans', monospace; font-weight: 600; font-size: 18px; color: #e7a86d">Lives</h2>
+        <span style="color: #c9a9b4; font-size: 13px">sem vídeo, só os pontos</span>
+        <span style="flex: 1 1 0"></span>
+        <button type="button" style="display: inline-flex; align-items: center; gap: 6px; height: 44px; padding: 0 12px; border: 1px solid #480e1e; border-radius: 4px; background: #722c3f; color: #fff6ef; font: 500 14px 'Barlow Semi Condensed', 'Barlow', sans-serif; box-shadow: inset 0 1px 0 rgba(241,211,183,0.22)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9"></path><path d="M13.5 2v3h-3"></path></svg>Conferir</button>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+        <div style="display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; background: #1e1219; border-radius: 4px">
+          <span style="color: #bf94ff; font-weight: 700">Twitch</span>
+          <span style="font-variant-numeric: tabular-nums"><strong>9</strong> no ar · baú sozinho</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; background: #1e1219; border-radius: 4px">
+          <span style="color: #53fc18; font-weight: 700">Kick</span>
+          <span style="font-variant-numeric: tabular-nums"><strong>7</strong> no ar</span>
+        </div>
+      </div>
+      <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+        <sc-for list="{{ assistindo }}" as="l" hint-placeholder-count="4">
+          <li style="display: flex; align-items: baseline; gap: 8px; padding: 7px 0; border-top: 1px solid #33202b; font-size: 13px">
+            <span style="width: 78px; flex: none; font-weight: 600; font-size: 14px">{{ l.conta }}</span>
+            <span style="color: #f1d3b7">{{ l.canais }}</span>
+          </li>
+        </sc-for>
+      </ul>
+    </section>
+
+    <section aria-labelledby="h-rapido" style="display: flex; flex-direction: column; gap: 4px; padding: 4px 12px; background: #1e1219; border: 1px solid #5c3948; border-radius: 4px">
+      <h2 id="h-rapido" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%)">Ajustes rápidos</h2>
+      <sc-for list="{{ rapidos }}" as="r" hint-placeholder-count="3">
+        <div style="display: flex; align-items: center; gap: 10px; min-height: 52px; border-bottom: 1px solid #33202b">
+          <span style="display: flex; flex-direction: column; gap: 1px; flex: 1 1 0">
+            <span style="font-weight: 600">{{ r.nome }}</span>
+            <span style="color: #c9a9b4; font-size: 13px">{{ r.nota }}</span>
+          </span>
+          <button type="button" role="switch" aria-checked="{{ r.on }}" aria-label="{{ r.nome }}" style="display: inline-flex; align-items: center; justify-content: {{ r.lado }}; width: 46px; height: 28px; padding: 3px; border: 1px solid {{ r.borda }}; border-radius: 4px; background: {{ r.fundo }}"><span style="width: 20px; height: 20px; border-radius: 2px; background: {{ r.pino }}; box-shadow: inset 0 -2px 0 rgba(0,0,0,0.25)"></span></button>
+        </div>
+      </sc-for>
+      <div style="display: flex; align-items: center; gap: 10px; min-height: 52px">
+        <span style="display: flex; flex-direction: column; gap: 1px; flex: 1 1 0">
+          <span style="font-weight: 600">Bloqueio do resgate</span>
+          <span style="color: #c9a9b4; font-size: 13px">buff que passa disso não resgata</span>
+        </span>
+        <span style="display: inline-flex; align-items: center; height: 32px; padding: 0 10px; border: 1px solid #5c3948; border-radius: 4px; background: #140a0f; font-weight: 600; font-variant-numeric: tabular-nums">23:00</span>
+      </div>
+    </section>
+
+    <div style="display: flex; gap: 8px">
+      <button type="button" style="flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 44px; border: 1px solid #480e1e; border-radius: 4px; background: #722c3f; color: #fff6ef; font: 500 15px 'Barlow Semi Condensed', 'Barlow', sans-serif; box-shadow: inset 0 1px 0 rgba(241,211,183,0.22)"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M8 1.8v5.4"></path><path d="M4.6 4.2a5 5 0 1 0 6.8 0"></path></svg>Desligar todas</button>
+      <a href="Registro.dc.html" style="flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 44px; box-sizing: border-box; border: 1px solid #480e1e; border-radius: 4px; background: #722c3f; color: #fff6ef; text-decoration: none; font: 500 15px 'Barlow Semi Condensed', 'Barlow', sans-serif; box-shadow: inset 0 1px 0 rgba(241,211,183,0.22)"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M5.5 4h8.5M5.5 8h8.5M5.5 12h8.5M2 4h.5M2 8h.5M2 12h.5"></path></svg>Registro</a>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1040}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const on = { borda: '#e2a93f', fundo: '#3d2c10', cor: '#ffe9a3', txt: 'ligado' };
+    const off = { borda: '#5c3948', fundo: '#1e1219', cor: '#c9a9b4', txt: 'desligado' };
+    const flag = (p, v) => ({ [p + 'Borda']: v.borda, [p + 'Fundo']: v.fundo, [p + 'Cor']: v.cor, [p + 'Txt']: v.txt });
+    const conta = (nome, estado, cor, moldura, ouro, buffT, buffK, t, k, gT, gK, compra) =>
+      ({ nome, estado, cor, moldura, ouro, buffT, buffK, t, k, ...flag('giftT', gT ? on : off), ...flag('giftK', gK ? on : off), ...flag('compra', compra ? on : off) });
+    const sw = (nome, nota, ligado) => ligado
+      ? { nome, nota, on: 'true', lado: 'flex-end', borda: '#7d5313', fundo: '#b98a2e', pino: '#ffe9a3' }
+      : { nome, nota, on: 'false', lado: 'flex-start', borda: '#5c3948', fundo: '#33202b', pino: '#c9a9b4' };
+    return {
+      contas: [
+        conta('Principal', 'jogando', '#6fd08a', '#e2a93f', '116.569', 'T · xp 25m', 'K · —', 2, 1, true, false, true),
+        conta('PokePepe1', 'jogando', '#6fd08a', '#480e1e', '12.450', 'T · xp 41m', 'K · xp 12m', 2, 2, true, true, true),
+        conta('PokePepe2', 'entrando…', '#f0a03c', '#480e1e', '8.120', 'T · —', 'K · xp 8m', 1, 2, true, true, true),
+        conta('PokePepe3', 'jogando', '#6fd08a', '#480e1e', '30.002', 'T · xp 3m', 'K · —', 2, 0, true, false, false)
+      ],
+      assistindo: [
+        { conta: 'Principal', canais: 'kennzy, tftoddy · axt' },
+        { conta: 'PokePepe1', canais: 'kennzy, tftoddy · axt, biscoitao' },
+        { conta: 'PokePepe2', canais: 'tftoddy · axt, biscoitao' },
+        { conta: 'PokePepe3', canais: 'kennzy, tftoddy' }
+      ],
+      rapidos: [
+        sw('Economia', 'jogo mais leve em todas as contas', true),
+        sw('Mudo', 'sem som em todas', true),
+        sw('ULTRA', 'velocidade máxima do jogo', false)
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

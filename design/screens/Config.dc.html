@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>PokeDeck Mobile — Config da conta</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&amp;family=Barlow+Semi+Condensed:wght@500;600&amp;family=Pixelify+Sans:wght@500;600;700&amp;display=swap">
+<style>body{margin:0}a{color:#ffe9a3}a:hover{color:#fff6ef}</style>
+</helmet>
+<div style="width: 390px; min-height: 1180px; box-sizing: border-box; display: flex; flex-direction: column; background: #140a0f; color: #fff6ef; font-family: 'Barlow', 'Segoe UI', sans-serif; font-size: 14px">
+
+  <header style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: #914850; border-top: 1px solid #bd6951; border-bottom: 2px solid #480e1e">
+    <a href="Main.dc.html" style="display: inline-flex; align-items: center; gap: 4px; height: 44px; box-sizing: border-box; padding: 0 12px 0 8px; border: 1px solid #480e1e; border-radius: 4px; background: #722c3f; color: #fff6ef; text-decoration: none; font: 600 15px 'Barlow Semi Condensed', 'Barlow', sans-serif; box-shadow: inset 0 1px 0 rgba(241,211,183,0.22)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 3-5 5 5 5"></path></svg>Menu</a>
+    <h1 style="margin: 0 0 0 4px; font-family: 'Pixelify Sans', monospace; font-weight: 600; font-size: 20px; color: #ffe9a3">Config</h1>
+  </header>
+
+  <nav aria-label="Abas da Config" style="display: flex; gap: 2px; padding: 10px 12px 0; border-bottom: 1px solid #5c3948">
+    <a href="Config.dc.html" aria-current="page" style="display: inline-flex; align-items: center; height: 44px; box-sizing: border-box; padding: 0 18px; margin-bottom: -1px; border: 1px solid #5c3948; border-top: 2px solid #e2a93f; border-bottom: 1px solid #1e1219; border-radius: 4px 4px 0 0; background: #1e1219; color: #fff6ef; text-decoration: none; font-weight: 600">Contas</a>
+    <a href="ConfigLives.dc.html" style="display: inline-flex; align-items: center; height: 44px; box-sizing: border-box; padding: 0 18px; color: #c9a9b4; text-decoration: none">Lives</a>
+  </nav>
+
+  <main style="flex: 1; display: flex; flex-direction: column; gap: 16px; padding: 14px 12px 20px; background: #1e1219">
+
+    <div role="group" aria-label="Conta" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; padding: 2px; background: #480e1e; border-radius: 5px">
+      <sc-for list="{{ contas }}" as="c" hint-placeholder-count="4">
+        <button type="button" aria-pressed="{{ c.on }}" style="height: 44px; padding: 0 4px; border: 0; border-radius: 3px; background: {{ c.fundo }}; color: {{ c.cor }}; font: {{ c.peso }} 13px 'Barlow Semi Condensed', 'Barlow', sans-serif; box-shadow: {{ c.sombra }}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ c.nome }}</button>
+      </sc-for>
+    </div>
+
+    <section aria-labelledby="h-conta" style="display: flex; flex-direction: column; gap: 4px; padding: 6px 12px 4px; background: #2a141d; border: 1px solid #480e1e; border-radius: 4px">
+      <h2 id="h-conta" style="margin: 6px 0 2px; font-family: 'Pixelify Sans', monospace; font-weight: 600; font-size: 17px; color: #e7a86d">A conta</h2>
+      <label style="display: flex; flex-direction: column; gap: 6px; padding: 6px 0 10px">
+        <span style="font-weight: 600">Nome</span>
+        <input type="text" value="Principal" style="height: 44px; box-sizing: border-box; padding: 0 10px; border: 1px solid #5c3948; border-radius: 4px; background: #140a0f; color: #fff6ef; font: inherit; font-size: 15px; box-shadow: inset 0 2px 0 rgba(0,0,0,0.35)">
+      </label>
+      <sc-for list="{{ chaves }}" as="r" hint-placeholder-count="4">
+        <div style="display: flex; align-items: center; gap: 10px; min-height: 52px; border-top: 1px solid #33202b">
+          <span style="display: flex; flex-direction: column; gap: 1px; flex: 1 1 0">
+            <span style="font-weight: 600">{{ r.nome }}</span>
+            <span style="color: #c9a9b4; font-size: 13px">{{ r.nota }}</span>
+          </span>
+          <button type="button" role="switch" aria-checked="{{ r.on }}" aria-label="{{ r.nome }}" style="display: inline-flex; align-items: center; justify-content: {{ r.lado }}; width: 46px; height: 28px; padding: 3px; border: 1px solid {{ r.borda }}; border-radius: 4px; background: {{ r.fundo }}"><span style="width: 20px; height: 20px; border-radius: 2px; background: {{ r.pino }}; box-shadow: inset 0 -2px 0 rgba(0,0,0,0.25)"></span></button>
+        </div>
+      </sc-for>
+    </section>
+
+    <section aria-labelledby="h-compra" style="display: flex; flex-direction: column; gap: 10px; padding: 12px; background: #2a141d; border: 1px solid #480e1e; border-radius: 4px">
+      <div style="display: flex; align-items: center; gap: 10px">
+        <h2 id="h-compra" style="margin: 0; flex: 1 1 0; font-family: 'Pixelify Sans', monospace; font-weight: 600; font-size: 17px; color: #e7a86d">Recompra</h2>
+        <button type="button" role="switch" aria-checked="true" aria-label="Recompra" style="display: inline-flex; align-items: center; justify-content: flex-end; width: 46px; height: 28px; padding: 3px; border: 1px solid #7d5313; border-radius: 4px; background: #b98a2e"><span style="width: 20px; height: 20px; border-radius: 2px; background: #ffe9a3; box-shadow: inset 0 -2px 0 rgba(0,0,0,0.25)"></span></button>
+      </div>
+      <p style="margin: 0; color: #c9a9b4; font-size: 13px; line-height: 1.45">Abaixo do número, compra a quantidade. Gasta ouro de verdade: confira os valores.</p>
+      <label style="display: flex; align-items: center; gap: 10px">
+        <span style="flex: 1 1 0; font-weight: 600">Ouro mínimo</span>
+        <input type="text" inputmode="numeric" value="10.000" style="width: 120px; height: 44px; box-sizing: border-box; padding: 0 10px; border: 1px solid #5c3948; border-radius: 4px; background: #140a0f; color: #fff6ef; font: inherit; font-size: 15px; text-align: right; font-variant-numeric: tabular-nums; box-shadow: inset 0 2px 0 rgba(0,0,0,0.35)">
+      </label>
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) 76px 76px; gap: 6px 8px; align-items: center; padding-top: 4px; border-top: 1px solid #33202b">
+        <span style="padding-top: 6px; color: #c9a9b4; font-size: 13px">Item</span>
+        <span style="padding-top: 6px; color: #c9a9b4; font-size: 13px">Abaixo de</span>
+        <span style="padding-top: 6px; color: #c9a9b4; font-size: 13px">Compra</span>
+        <sc-for list="{{ regras }}" as="g" hint-placeholder-count="3">
+          <label style="display: flex; align-items: center; gap: 8px; min-height: 44px"><input type="checkbox" checked style="width: 20px; height: 20px; margin: 0; accent-color: #e2a93f">{{ g.nome }}</label>
+          <input type="text" inputmode="numeric" value="{{ g.abaixo }}" aria-label="{{ g.nome }}: abaixo de" style="height: 44px; box-sizing: border-box; padding: 0 8px; border: 1px solid #5c3948; border-radius: 4px; background: #140a0f; color: #fff6ef; font: inherit; font-size: 15px; text-align: right; font-variant-numeric: tabular-nums">
+          <input type="text" inputmode="numeric" value="{{ g.compra }}" aria-label="{{ g.nome }}: compra" style="height: 44px; box-sizing: border-box; padding: 0 8px; border: 1px solid #5c3948; border-radius: 4px; background: #140a0f; color: #fff6ef; font: inherit; font-size: 15px; text-align: right; font-variant-numeric: tabular-nums">
+        </sc-for>
+      </div>
+      <button type="button" style="height: 44px; border: 1px solid #5c3948; border-radius: 4px; background: #33202b; color: #fff6ef; font: inherit">Aplicar a todas as contas</button>
+    </section>
+
+    <a href="Tour.dc.html" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 44px; box-sizing: border-box; border: 1px solid #5c3948; border-radius: 4px; color: #f1d3b7; text-decoration: none"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"></circle><path d="M6.2 6.2a1.9 1.9 0 1 1 2.6 1.8c-.5.2-.8.6-.8 1.1v.4M8 11.6v.1"></path></svg>Rever tour</a>
+  </main>
+
+  <footer style="display: flex; gap: 8px; padding: 10px 12px; background: #2a141d; border-top: 1px solid #5c3948">
+    <a href="Main.dc.html" style="flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; height: 48px; box-sizing: border-box; border: 1px solid #5c3948; border-radius: 4px; background: #33202b; color: #fff6ef; text-decoration: none">Cancelar</a>
+    <button type="button" style="flex: 2 1 0; height: 48px; border: 1px solid #7d5313; border-radius: 4px; background: #e2a93f; color: #3a0a16; font: 700 15px 'Barlow', sans-serif; box-shadow: inset 0 1px 0 #ffe9a3, inset 0 -2px 0 #b98a2e">Salvar</button>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1180}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const sw = (nome, nota, ligado) => ligado
+      ? { nome, nota, on: 'true', lado: 'flex-end', borda: '#7d5313', fundo: '#b98a2e', pino: '#ffe9a3' }
+      : { nome, nota, on: 'false', lado: 'flex-start', borda: '#5c3948', fundo: '#33202b', pino: '#c9a9b4' };
+    return {
+      contas: ['Principal', 'PokePepe1', 'PokePepe2', 'PokePepe3'].map((nome, i) => i === 0
+        ? { nome, on: 'true', fundo: '#e2a93f', cor: '#3a0a16', peso: 600, sombra: 'inset 0 1px 0 #ffe9a3' }
+        : { nome, on: 'false', fundo: 'transparent', cor: '#f1d3b7', peso: 500, sombra: 'none' }),
+      chaves: [
+        sw('Ligada', 'entra sozinha ao abrir o app', true),
+        sw('Economia', 'menos gráfico, mais leve', true),
+        sw('ULTRA', 'velocidade máxima do jogo', false),
+        sw('Mudo', 'sem som nesta conta', true)
+      ],
+      regras: [
+        { nome: 'Pokébola', abaixo: 100, compra: 500 },
+        { nome: 'Poção', abaixo: 30, compra: 100 },
+        { nome: 'Revive', abaixo: 3, compra: 10 }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

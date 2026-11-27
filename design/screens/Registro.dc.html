@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>PokeDeck Mobile — registro</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&amp;family=Barlow+Semi+Condensed:wght@500;600&amp;family=Pixelify+Sans:wght@500;600;700&amp;display=swap">
+<style>body{margin:0}a{color:#ffe9a3}a:hover{color:#fff6ef}</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #140a0f; color: #fff6ef; font-family: 'Barlow', 'Segoe UI', sans-serif; font-size: 14px; overflow: hidden">
+
+  <header style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: #914850; border-top: 1px solid #bd6951; border-bottom: 2px solid #480e1e">
+    <a href="Main.dc.html" style="display: inline-flex; align-items: center; gap: 4px; height: 44px; box-sizing: border-box; padding: 0 12px 0 8px; border: 1px solid #480e1e; border-radius: 4px; background: #722c3f; color: #fff6ef; text-decoration: none; font: 600 15px 'Barlow Semi Condensed', 'Barlow', sans-serif; box-shadow: inset 0 1px 0 rgba(241,211,183,0.22)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 3-5 5 5 5"></path></svg>Menu</a>
+    <h1 style="margin: 0 0 0 4px; font-family: 'Pixelify Sans', monospace; font-weight: 600; font-size: 20px; color: #ffe9a3">Registro</h1>
+  </header>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 10px 12px; background: #1e1219; border-bottom: 1px solid #5c3948">
+    <select aria-label="Conta" style="height: 44px; padding: 0 8px; border: 1px solid #5c3948; border-radius: 4px; background: #140a0f; color: #fff6ef; font: inherit"><option>Todas as contas</option><option>Principal</option><option>PokePepe1</option><option>PokePepe2</option><option>PokePepe3</option></select>
+    <select aria-label="Site" style="height: 44px; padding: 0 8px; border: 1px solid #5c3948; border-radius: 4px; background: #140a0f; color: #fff6ef; font: inherit"><option>Twitch e Kick</option><option>Twitch</option><option>Kick</option></select>
+  </div>
+
+  <ol style="flex: 1; list-style: none; margin: 0; padding: 0; overflow-y: auto">
+    <sc-for list="{{ linhas }}" as="l" hint-placeholder-count="10">
+      <li style="display: flex; flex-direction: column; gap: 3px; padding: 9px 12px; border-bottom: 1px solid #33202b; background: {{ l.fundo }}">
+        <span style="display: flex; align-items: center; gap: 8px">
+          <span style="display: inline-block; padding: 1px 7px; border-radius: 3px; font-size: 12px; font-weight: 600; background: {{ l.tagFundo }}; color: {{ l.tagCor }}">{{ l.evento }}</span>
+          <span style="font-weight: 600">{{ l.conta }}</span>
+          <span style="color: {{ l.siteCor }}; font-size: 13px; font-weight: 600">{{ l.site }}</span>
+          <span style="flex: 1 1 0"></span>
+          <span style="color: #c9a9b4; font-size: 13px; font-variant-numeric: tabular-nums">{{ l.hora }}</span>
+        </span>
+        <span style="color: #f1d3b7; font-size: 13px; line-height: 1.4">{{ l.detalhe }}</span>
+      </li>
+    </sc-for>
+  </ol>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const tags = {
+      'baú': ['rgba(111,208,138,0.14)', '#6fd08a'],
+      'resgate': ['rgba(226,169,63,0.16)', '#ffe9a3'],
+      'guarda': ['rgba(231,168,109,0.16)', '#e7a86d'],
+      'baú recusado': ['rgba(216,87,74,0.2)', '#ffc9bd'],
+      'bloqueio': ['rgba(216,87,74,0.2)', '#ffc9bd']
+    };
+    const rows = [
+      ['23:26', 'Principal', 'Twitch', 'baú', 'kennzy · pegou o baú (+50)'],
+      ['23:26', 'PokePepe2', 'Twitch', 'baú', 'tftoddy · pegou o baú (+50)'],
+      ['23:25', 'PokePepe2', 'Kick', 'guarda', 'o bônus xp vence em 25 min e nenhum canal tem os pontos'],
+      ['23:25', 'PokePepe3', 'Twitch', 'baú', 'tftoddy · pegou o baú (+50)'],
+      ['23:25', 'Principal', 'Twitch', 'baú recusado', 'tftoddy · baú recusado (NOT_FOUND)'],
+      ['23:21', 'PokePepe1', 'Twitch', 'resgate', 'kennzy · resgatou Bônus +15% XP (saldo 0)'],
+      ['23:11', 'PokePepe1', 'Twitch', 'resgate', 'kennzy · resgatou Bônus +15% XP (saldo 230)'],
+      ['22:55', 'Principal', 'Twitch', 'bloqueio', 'resgate religado à mão; o bloqueio das 22:00 volta a valer depois desse horário'],
+      ['22:49', 'PokePepe2', 'Kick', 'resgate', 'axt · resgatou Bônus +15% XP (saldo 0)']
+    ];
+    return {
+      linhas: rows.map(([hora, conta, site, evento, detalhe], i) => ({
+        hora, conta, site, evento, detalhe,
+        fundo: i % 2 ? '#1e1219' : 'transparent',
+        siteCor: site === 'Kick' ? '#53fc18' : '#bf94ff',
+        tagFundo: tags[evento][0], tagCor: tags[evento][1]
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>

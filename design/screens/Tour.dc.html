@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>PokeDeck Mobile — tour</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&amp;family=Barlow+Semi+Condensed:wght@500;600&amp;family=Pixelify+Sans:wght@500;600;700&amp;display=swap">
+<style>body{margin:0}a{color:#ffe9a3}a:hover{color:#fff6ef}</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 1040px; overflow: hidden; background: #140a0f; color: #fff6ef; font-family: 'Barlow', 'Segoe UI', sans-serif; font-size: 14px">
+  <div aria-hidden="true" inert="" style="position: absolute; inset: 0">
+    <dc-import name="Main" hint-size="390px,1040px"></dc-import>
+  </div>
+
+  <sc-if value="{{ temAlvo }}" hint-placeholder-val="{{ true }}">
+    <div aria-hidden="true" style="position: absolute; left: {{ alvo.x }}px; top: {{ alvo.y }}px; width: {{ alvo.w }}px; height: {{ alvo.h }}px; border: 2px solid #e2a93f; border-radius: 6px; box-shadow: 0 0 0 2000px rgba(20,10,15,0.72)"></div>
+  </sc-if>
+  <sc-if value="{{ semAlvo }}" hint-placeholder-val="{{ false }}">
+    <div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(20,10,15,0.72)"></div>
+  </sc-if>
+
+  <section role="dialog" aria-labelledby="tour-t" style="position: absolute; left: 16px; right: 16px; top: {{ balaoTop }}px; display: flex; flex-direction: column; gap: 10px; padding: 14px; background: #2a141d; border: 2px solid #e2a93f; border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.5)">
+    <div style="display: flex; align-items: baseline; gap: 8px">
+      <h2 id="tour-t" style="margin: 0; flex: 1 1 0; font-family: 'Pixelify Sans', monospace; font-weight: 600; font-size: 18px; color: #ffe9a3">{{ passo.titulo }}</h2>
+      <span style="color: #c9a9b4; font-size: 13px; font-variant-numeric: tabular-nums">{{ contador }}</span>
+    </div>
+    <p style="margin: 0; line-height: 1.5; color: #f1d3b7">{{ passo.texto }}</p>
+    <div style="display: flex; gap: 8px">
+      <a href="Main.dc.html" style="display: inline-flex; align-items: center; height: 44px; box-sizing: border-box; padding: 0 10px; color: #c9a9b4; text-decoration: none">Pular</a>
+      <span style="flex: 1 1 0"></span>
+      <button type="button" onClick="{{ voltar }}" disabled="{{ primeiro }}" style="height: 44px; padding: 0 14px; border: 1px solid #5c3948; border-radius: 4px; background: #33202b; color: #fff6ef; font: inherit">Anterior</button>
+      <button type="button" onClick="{{ avancar }}" style="height: 44px; padding: 0 18px; border: 1px solid #7d5313; border-radius: 4px; background: #e2a93f; color: #3a0a16; font: 700 14px 'Barlow', sans-serif; box-shadow: inset 0 1px 0 #ffe9a3, inset 0 -2px 0 #b98a2e">{{ rotulo }}</button>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"passo":{"editor":"int","min":1,"max":7,"default":2},"$preview":{"width":390,"height":1040}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const PASSOS = [
+      { titulo: 'Bem-vindo ao PokeDeck!', texto: 'Um tour rápido pelo app. Dá para pular agora e rever quando quiser em Config › Rever tour.' },
+      { alvo: { x: 8, y: 107, w: 374, h: 352 }, titulo: 'Suas contas', texto: 'Cada barra é uma conta: o quadradinho mostra o estado (verde: no jogo), o ouro, os bônus da Twitch (T) e da Kick (K) e o que está ligado. Ao abrir o app, todas entram sozinhas.' },
+      { alvo: { x: 8, y: 107, w: 374, h: 88 }, titulo: 'Abrir uma conta', texto: 'Toque na barra: a conta abre por cima do menu, com o jogo e os botões dela. Para voltar, toque em Menu no canto de cima.' },
+      { alvo: { x: 8, y: 469, w: 374, h: 290 }, titulo: 'Lives', texto: 'O que cada conta está assistindo agora, sem vídeo, só para juntar os pontos. Conferir procura na hora quem está ao vivo.' },
+      { alvo: { x: 8, y: 769, w: 374, h: 222 }, titulo: 'Ajustes rápidos', texto: 'Economia, Mudo e ULTRA para todas as contas de uma vez, e o horário de bloqueio do resgate.' },
+      { alvo: { x: 330, y: 8, w: 52, h: 52 }, titulo: 'Config', texto: 'Por conta: nome, modos do jogo e recompra. Na aba Lives: canais, quantas lives, o resgate de cada conta e a guarda. Nada vale até tocar em Salvar.' },
+      { alvo: { x: 280, y: 8, w: 52, h: 52 }, titulo: 'Pronto!', texto: 'Quando quiser relembrar algo, toque aqui ou em Config › Rever tour.' }
+    ];
+    const i = Math.min(PASSOS.length - 1, Math.max(0, this.state.i ?? ((this.props.passo ?? 2) - 1)));
+    const p = PASSOS[i];
+    const ultimo = i === PASSOS.length - 1;
+    const balaoTop = !p.alvo ? 380 : p.alvo.y + p.alvo.h < 600 ? p.alvo.y + p.alvo.h + 14 : p.alvo.y - 214;
+    return {
+      passo: p,
+      temAlvo: !!p.alvo,
+      semAlvo: !p.alvo,
+      alvo: p.alvo || { x: 0, y: 0, w: 0, h: 0 },
+      balaoTop,
+      contador: (i + 1) + ' de ' + PASSOS.length,
+      primeiro: i === 0,
+      rotulo: ultimo ? 'Concluir' : 'Próximo',
+      voltar: () => this.setState({ i: Math.max(0, i - 1) }),
+      avancar: () => this.setState({ i: ultimo ? 0 : i + 1 })
+    };
+  }
+}
+</script>
+</body>
+</html>
