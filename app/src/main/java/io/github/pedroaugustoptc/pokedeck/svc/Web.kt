@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.webkit.WebSettings
 import android.webkit.WebView
 import androidx.webkit.ProfileStore
-import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
 import java.net.URLDecoder
@@ -43,8 +42,6 @@ object Web {
             setSupportMultipleWindows(false)
             setGeolocationEnabled(false)
         }
-        if (WebViewFeature.isFeatureSupported(WebViewFeature.REQUESTED_WITH_HEADER_ALLOW_LIST))
-            WebSettingsCompat.setRequestedWithHeaderOriginAllowList(view.settings, emptySet()) // sem o X-Requested-With do app
         cookies(profile).setAcceptThirdPartyCookies(view, true)
         // O processo do navegador não vira "descartável" quando a conta está escondida.
         view.setRendererPriorityPolicy(WebView.RENDERER_PRIORITY_IMPORTANT, false)

@@ -28,7 +28,7 @@ fun phaseOf(a: Account): Pair<String, Int> = when (a.phase) {
     else -> "desligada" to C.WEAK
 }
 
-val gold: NumberFormat = NumberFormat.getIntegerInstance(Locale("pt", "BR"))
+val gold: NumberFormat = NumberFormat.getIntegerInstance(Locale.forLanguageTag("pt-BR"))
 
 /** "T · xp 25m": o bônus escolhido no site (ou o que tem mais tempo) e quanto falta. */
 fun buffText(letter: String, bonus: BonusSite?, chosen: String?): String {

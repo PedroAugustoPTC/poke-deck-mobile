@@ -194,7 +194,7 @@ object Timing {
     const val SPRITE_MS = 440
 }
 
-internal fun JSONArray.strings(): List<String> = (0 until length()).mapNotNull { optString(it, null) }
+internal fun JSONArray.strings(): List<String> = (0 until length()).mapNotNull { opt(it) as? String }
 
 /** optString devolve "null" para JSON null; este devolve null de verdade. */
-internal fun JSONObject.optStr(name: String): String? = if (isNull(name)) null else optString(name, null)
+internal fun JSONObject.optStr(name: String): String? = opt(name) as? String // ausente ou JSON null → null

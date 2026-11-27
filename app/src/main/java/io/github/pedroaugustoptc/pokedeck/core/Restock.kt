@@ -24,7 +24,7 @@ class Restock(private val now: () -> Long = System::currentTimeMillis, private v
         private const val FAIL_PAUSE = 120_000L
         private const val AUTO_REPEAT = 30_000L
         private const val WAIT = "wait"
-        private val fmt = NumberFormat.getIntegerInstance(Locale("pt", "BR"))
+        private val fmt = NumberFormat.getIntegerInstance(Locale.forLanguageTag("pt-BR"))
         private fun fmt(n: Double) = fmt.format(n.roundToLong())
         private fun fmt(n: Long) = fmt.format(n)
     }
