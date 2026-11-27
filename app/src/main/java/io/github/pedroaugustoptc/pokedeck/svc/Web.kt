@@ -27,7 +27,11 @@ object Web {
 
     @SuppressLint("SetJavaScriptEnabled")
     fun create(context: Context, profile: String): WebView {
-        val view = WebView(MutableContextWrapper(context)) // a conta muda de janela (serviço ↔ tela) sem recriar
+        // A conta muda de janela (serviço ↔ tela) sem recriar. Tela bloqueada esconde a janela (inclusive a sobreposição) e o
+        // Chromium congelaria os timers da página até o socket do jogo cair: o navegador se acha sempre visível.
+        val view = object : WebView(MutableContextWrapper(context)) {
+            override fun onWindowVisibilityChanged(visibility: Int) = super.onWindowVisibilityChanged(android.view.View.VISIBLE)
+        }
         ProfileStore.getInstance().getOrCreateProfile(profile)
         WebViewCompat.setProfile(view, profile) // antes de qualquer outra coisa no WebView
         view.setBackgroundColor(Color.rgb(20, 10, 15))

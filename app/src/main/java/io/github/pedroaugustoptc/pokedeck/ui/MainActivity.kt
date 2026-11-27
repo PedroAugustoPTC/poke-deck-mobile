@@ -154,6 +154,13 @@ class MainActivity : Activity() {
         super.onPause()
     }
 
+    // Tela bloqueada ou app em segundo plano: a conta aberta vai para a janela escondida, senão o navegador congela com a
+    // janela parada e o jogo perde a conexão. O onResume a traz de volta (resume da ContaScreen).
+    override fun onStop() {
+        if (Web.supported()) Deck.hide()
+        super.onStop()
+    }
+
     override fun onDestroy() {
         stack.asReversed().forEach { it.close() }
         if (Web.supported()) {
