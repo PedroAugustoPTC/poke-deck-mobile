@@ -49,6 +49,7 @@ class MenuScreen(act: MainActivity) : Screen(act) {
     private lateinit var kickCount: TextView
     private lateinit var watching: LinearLayout
     private lateinit var blockField: TextView
+    private lateinit var powerAll: TextView
     private val quick = HashMap<String, Toggle>()
     private var tour: TourOverlay? = null
 
@@ -184,10 +185,15 @@ class MenuScreen(act: MainActivity) : Screen(act) {
             }, WRAP, WRAP)
 
             val foot = main.add(row(8))
-            foot.add(button("Desligar todas", R.drawable.ic_power) {
+            powerAll = foot.add(button("Desligar todas", R.drawable.ic_power) {
+                if (Deck.config.accounts.none { it.on }) {
+                    Deck.edit { c -> c.accounts.forEach { it.on = true } }
+                    refresh()
+                    return@button
+                }
                 AlertDialog.Builder(act).setTitle("Desligar todas as contas?")
-                    .setMessage("O jogo e as lives param em todas. Para religar, abra a conta e toque em ligar.")
-                    .setPositiveButton("Desligar") { _, _ -> Deck.edit { c -> c.accounts.forEach { it.on = false } } }
+                    .setMessage("O jogo e as lives param em todas. Para religar, toque em \"Ligar todas\" ou abra a conta e toque em ligar.")
+                    .setPositiveButton("Desligar") { _, _ -> Deck.edit { c -> c.accounts.forEach { it.on = false } }; refresh() }
                     .setNegativeButton("Cancelar", null).show()
             }, 0, WRAP, 1f)
             foot.add(button("Registro", R.drawable.ic_list) { act.push(RegistroScreen(act)) }, 0, WRAP, 1f)
@@ -206,6 +212,7 @@ class MenuScreen(act: MainActivity) : Screen(act) {
         quick["muted"]?.on = cfg.accounts.all { it.muted }
         quick["ultra"]?.on = cfg.accounts.all { it.ultra }
         blockField.text = cfg.redeemBlockAt ?: "sem"
+        powerAll.text = if (cfg.accounts.none { it.on }) "Ligar todas" else "Desligar todas"
         tour?.place()
     }
 
