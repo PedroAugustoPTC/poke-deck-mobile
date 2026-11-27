@@ -1,24 +1,29 @@
 package io.github.pedroaugustoptc.pokedeck.ui
 
 import android.app.AlertDialog
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Intent
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.core.widget.doAfterTextChanged
+import java.io.IOException
 import io.github.pedroaugustoptc.pokedeck.R
 import io.github.pedroaugustoptc.pokedeck.core.AccountConfig
 import io.github.pedroaugustoptc.pokedeck.core.Config
 import io.github.pedroaugustoptc.pokedeck.core.Rule
+import io.github.pedroaugustoptc.pokedeck.core.Share
 import io.github.pedroaugustoptc.pokedeck.svc.Deck
 
 /**
- * Config (design/screens/Config.dc.html e ConfigLives.dc.html): abas Contas e Lives sobre uma cópia da config. Nada vale
+ * Config (design/screens/Config.dc.html e ConfigLives.dc.html): abas Contas, Lives e Importar sobre uma cópia da config. Nada vale
  * até tocar em Salvar. Sem "Tempos e desempenho", voto e extensões (o mobile usa os tempos padrão do PC).
  */
 class ConfigScreen(act: MainActivity) : Screen(act) {
-    private val draft: Config = Deck.config.copy()
+    private var draft: Config = Deck.config.copy()
     override val view = act.column()
     private val body = act.column(14)
     private val tabs = ArrayList<TextView>()
@@ -34,7 +39,7 @@ class ConfigScreen(act: MainActivity) : Screen(act) {
             header.add(text("Config", 22f, C.GOLD_LIGHT, Fonts.pixel), 0, WRAP, 1f)
 
             val tabRow = view.add(row())
-            for ((k, name) in listOf("Contas", "Lives").withIndex()) {
+            for ((k, name) in listOf("Contas", "Lives", "Importar").withIndex()) {
                 tabs += tabRow.add(text(name, 15f, font = Fonts.cond).apply {
                     gravity = Gravity.CENTER
                     minHeight = dp(44)
@@ -64,7 +69,11 @@ class ConfigScreen(act: MainActivity) : Screen(act) {
             t.background = if (k == tab) act.box(C.PANEL_HIGH, C.GOLD, radiusDp = 0) else act.box(C.PANEL, radiusDp = 0)
         }
         body.removeAllViews()
-        if (tab == 0) accountsTab() else livesTab()
+        when (tab) {
+            0 -> accountsTab()
+            1 -> livesTab()
+            else -> shareTab()
+        }
     }
 
     // ---------------- Contas ----------------
@@ -170,6 +179,88 @@ class ConfigScreen(act: MainActivity) : Screen(act) {
         card.add(choice("Resgate Twitch", a.redeemTwitch) { a.redeemTwitch = it })
         card.add(choice("Resgate Kick", a.redeemKick) { a.redeemKick = it })
         card.add(switchRow("Guarda", "resgata perto de o bônus vencer", a.guard) { a.guard = it }.first)
+    }
+
+    // ---------------- Importar ----------------
+
+    private fun shareTab() = with(act) {
+        body.add(text("Leva a config entre o celular e o PokeDeck do PC: canais e ordem das lives, quantas lives, baú, horário de " +
+            "bloqueio e, por conta, nome, ligada, ULTRA, economia, lives, resgates, guarda e recompra. Mudo fica como está aqui.", 14f, C.LIGHT))
+
+        val code = body.add(panel(C.PANEL, C.THREAD, 8))
+        code.add(title("Código"))
+        code.add(text("Um texto que começa com ${Share.PREFIX}. Mande para você mesmo (WhatsApp, Telegram, e-mail) e cole no outro aparelho.", 13f, C.WEAK))
+        val cb = act.getSystemService(ClipboardManager::class.java)
+        code.add(button("Copiar código") {
+            cb.setPrimaryClip(ClipData.newPlainText("Config do PokeDeck", Share.code(draft)))
+            say("Código copiado. Cole no PokeDeck do PC (Config → Importar/exportar → Colar código).")
+        })
+        code.add(button("Colar código") {
+            val clip = cb.primaryClip?.takeIf { it.itemCount > 0 }?.getItemAt(0)?.coerceToText(act)?.toString()
+            read(clip.orEmpty())
+        })
+
+        val file = body.add(panel(C.PANEL, C.THREAD, 8))
+        file.add(title("Arquivo"))
+        file.add(button("Exportar arquivo") {
+            val pick = Intent(Intent.ACTION_CREATE_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE)
+                .setType("application/json").putExtra(Intent.EXTRA_TITLE, "pokedeck-config.json")
+            act.pickFile(pick) { uri ->
+                if (uri == null) return@pickFile
+                try {
+                    act.contentResolver.openOutputStream(uri, "wt")?.use { it.write(Share.json(draft).toString(1).toByteArray()) }
+                        ?: throw IOException("sem acesso ao arquivo")
+                    say("Config exportada.")
+                } catch (e: IOException) {
+                    say("Não deu para salvar: ${e.message}")
+                } catch (e: SecurityException) {
+                    say("Não deu para salvar: ${e.message}")
+                }
+            }
+        })
+        file.add(button("Importar arquivo") {
+            act.pickFile(Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("*/*")) { uri ->
+                if (uri == null) return@pickFile
+                try {
+                    val bytes = act.contentResolver.openInputStream(uri)?.use { s -> s.readNBytes1M() } ?: throw IOException("sem acesso ao arquivo")
+                    if (bytes.size > MAX_FILE) say("Arquivo grande demais para ser uma config do PokeDeck.")
+                    else read(bytes.toString(Charsets.UTF_8))
+                } catch (e: IOException) {
+                    say("Não deu para abrir: ${e.message}")
+                } catch (e: SecurityException) {
+                    say("Não deu para abrir: ${e.message}")
+                }
+            }
+        })
+        body.add(text("Importar só muda esta tela: nada vale até tocar em Salvar. Aqui a Kick vai até 2 lives.", 13f, C.WEAK))
+    }
+
+    private fun read(text: String) {
+        try {
+            draft = Share.read(text, draft)
+            say("Config importada. Confira as abas e toque em Salvar para valer (Cancelar descarta).")
+        } catch (e: Share.Invalid) {
+            say(e.message ?: "Não deu para importar.")
+        }
+    }
+
+    private fun say(msg: String) {
+        AlertDialog.Builder(act).setMessage(msg).setPositiveButton("Ok", null).show()
+    }
+
+    private fun java.io.InputStream.readNBytes1M(): ByteArray {
+        val out = java.io.ByteArrayOutputStream()
+        val buf = ByteArray(8192)
+        while (out.size() <= MAX_FILE) {
+            val n = read(buf)
+            if (n < 0) break
+            out.write(buf, 0, n)
+        }
+        return out.toByteArray()
+    }
+
+    private companion object {
+        const val MAX_FILE = 1024 * 1024
     }
 
     private val kinds = listOf("+15% XP" to "xp", "Captura" to "captura", "Shiny" to "shiny", "Nada" to null)

@@ -2,6 +2,7 @@ package io.github.pedroaugustoptc.pokedeck.ui
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -39,6 +40,10 @@ abstract class Screen(val act: MainActivity) {
  * Android 8 ao 16.
  */
 class MainActivity : Activity() {
+    private companion object {
+        const val REQ_FILE = 41
+    }
+
     private lateinit var content: FrameLayout
     private val stack = ArrayList<Screen>()
     private val ticker = Handler(Looper.getMainLooper())
@@ -105,6 +110,28 @@ class MainActivity : Activity() {
         stack.last().view.visibility = View.VISIBLE
         stack.last().resume()
         stack.last().refresh()
+    }
+
+    // ---------------- arquivos (seletor do sistema) ----------------
+
+    private var onFile: ((Uri?) -> Unit)? = null
+
+    /** Abre o seletor de arquivos do Android (criar ou abrir documento); [done] recebe null se o usuário desistiu. */
+    fun pickFile(intent: Intent, done: (Uri?) -> Unit) {
+        onFile = done
+        try {
+            startActivityForResult(intent, REQ_FILE)
+        } catch (_: ActivityNotFoundException) {
+            onFile = null
+            AlertDialog.Builder(this).setMessage("Este aparelho não tem um seletor de arquivos. Use o código.").setPositiveButton("Ok", null).show()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode != REQ_FILE) return super.onActivityResult(requestCode, resultCode, data)
+        val done = onFile
+        onFile = null
+        done?.invoke(if (resultCode == RESULT_OK) data?.data else null)
     }
 
     @Deprecated("targetSdk 35: ainda chamado em todas as versões")

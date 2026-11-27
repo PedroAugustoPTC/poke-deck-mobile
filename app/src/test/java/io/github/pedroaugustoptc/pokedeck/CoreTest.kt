@@ -262,3 +262,74 @@ class UpdaterTest {
         assertFalse(Updater.isNewer("0.0.0", r))
     }
 }
+
+class ShareTest {
+    @Test fun codeRoundTripKeepsDeviceFields() {
+        val src = Config()
+        src.twitchChannels = listOf("b", "a")
+        src.kickLives = 1
+        src.accounts[1].name = "Alt"
+        src.accounts[1].restock.goldFloor = 777
+        src.accounts[1].restock.potions.buy = 42
+        src.accounts[0].muted = true
+        val code = io.github.pedroaugustoptc.pokedeck.core.Share.code(src)
+        assertTrue(code.startsWith("PKD1:"))
+
+        val here = Config(tourDone = false, setupDone = false)
+        here.accounts[0].muted = false
+        val got = io.github.pedroaugustoptc.pokedeck.core.Share.read("  $code\n", here)
+        assertEquals(listOf("b", "a"), got.twitchChannels)
+        assertEquals(1, got.kickLives)
+        assertEquals("Alt", got.accounts[1].name)
+        assertEquals(777L, got.accounts[1].restock.goldFloor)
+        assertEquals(42, got.accounts[1].restock.potions.buy)
+        assertFalse(got.accounts[0].muted) // mudo é do aparelho
+        assertFalse(got.tourDone)
+        assertFalse(got.setupDone)
+    }
+
+    @Test fun readsPcConfigJson() {
+        // o config.json do PC: PascalCase, com Layout/Timing/Zoom que o celular ignora, e KickLives até 5
+        val pc = """{"Accounts":[{"Name":"PC 1","On":true,"Ultra":true,"Economy":false,"ReduceMotion":true,"Muted":true,"Zoom":1.25,
+            "Lives":true,"RedeemTwitch":"shiny","RedeemKick":null,"RedeemTwitchOn":false,"RedeemKickOn":true,"Guard":false,
+            "Restock":{"On":true,"GoldFloor":5000,"PotionFirst":true,"Balls":{"On":true,"Id":3,"Buy":50,"Below":10},
+            "Revives":{"On":false,"Id":0,"Buy":1,"Below":1},"Potions":{"On":true,"Id":0,"Buy":9,"Below":8}}}],
+            "Layout":"focus","Focus":2,"TwitchChannels":["Zed","ana"],"KickChannels":["k1"],"TwitchLives":3,"KickLives":5,
+            "ClaimChest":false,"RedeemBlockAt":null,"Timing":{"Fps":60},"TourDone":true}"""
+        val here = Config()
+        here.accounts[1].name = "Fica"
+        val got = io.github.pedroaugustoptc.pokedeck.core.Share.read(pc, here)
+        assertEquals(listOf("zed", "ana"), got.twitchChannels)
+        assertEquals(3, got.twitchLives)
+        assertEquals(2, got.kickLives) // o celular limita a Kick a 2
+        assertFalse(got.claimChest)
+        val a = got.accounts[0]
+        assertEquals("PC 1", a.name)
+        assertTrue(a.ultra && a.lives && !a.guard && !a.redeemTwitchOn)
+        assertEquals("shiny", a.redeemTwitch)
+        assertTrue(a.muted) // o padrão daqui, não o do PC
+        assertEquals(5000L, a.restock.goldFloor)
+        assertEquals(3, a.restock.balls.id)
+        assertFalse(a.restock.revives.on)
+        assertEquals("Fica", got.accounts[1].name) // conta que não veio fica como estava
+        assertEquals(4, got.accounts.size)
+    }
+
+    @Test fun rejectsBadInput() {
+        val share = io.github.pedroaugustoptc.pokedeck.core.Share
+        for (bad in listOf("oi", "PKD1:@@@", "PKD1:AAAA", "{\"x\":1}", "{nope", "{\"v\":2,\"accounts\":[]}"))
+            try {
+                share.read(bad, Config())
+                throw AssertionError("aceitou $bad")
+            } catch (e: io.github.pedroaugustoptc.pokedeck.core.Share.Invalid) {
+                assertTrue(e.message!!.isNotEmpty())
+            }
+    }
+
+    @Test fun fileJsonHasNoDeviceFields() {
+        val o = io.github.pedroaugustoptc.pokedeck.core.Share.json(Config())
+        assertEquals(1, o.getInt("v"))
+        assertFalse(o.has("tourDone") || o.has("setupDone"))
+        assertFalse(o.getJSONArray("accounts").getJSONObject(0).has("muted"))
+    }
+}
